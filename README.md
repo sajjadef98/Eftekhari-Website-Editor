@@ -3,6 +3,8 @@
 Eftekhari Website Editor developed by Sajjad Eftekhari
 Powerful free and single -page editor usable on all sites developed with Sajjad
 ***
+[Donate Sajjad Sftekhari ](https://idpay.ir/sajjadeftekhari)
+
 Set the  $chek_dir[1] in line 81 and run the websiteedite.php
 ```php
   $chek_dir[1]     =   __DIR__ . '/';
