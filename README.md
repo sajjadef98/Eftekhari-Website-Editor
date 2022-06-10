@@ -1,7 +1,7 @@
 
 
 Eftekhari Website Editor developed by Sajjad Eftekhari
-Powerful free and single -page editor usable on all sites developed with Sajjad
+Powerful free and single -page editor usable on all sites 
 ***
 [Donate Sajjad Sftekhari ](https://idpay.ir/sajjadeftekhari)
 
