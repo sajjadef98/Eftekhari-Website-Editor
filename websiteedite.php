@@ -366,9 +366,8 @@
             } ?>" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="_token" value="<?=csrf_token()?>" />
                 <div class="col-12 sa_rtl row">
-                    <h4 id="tittle-c"> Eftekhari Website Editor
-                        <a href="https://idpay.ir/sajjadeftekhari" target="_blank"><input class="btn btn-success" type="button" value="donate"></a>
-                        <input class="btn btn-primary" type="submit" name="codesubmit" value="ذخیره انتشار">
+                    <h4 id="tittle-c"> Eftekhari Website Editor  &nbsp
+                        <a href="https://github.com/sajjadef98/Eftekhari-Website-Editor" target="_blank"><input class="btn btn-success" type="button" value="Support on GitHub 🌟"></a> &nbsp<input class="btn btn-primary" type="submit" name="codesubmit" value="Save">
                     </h4>
                 </div> <br>
 
@@ -381,7 +380,7 @@
                 </div>
                 <div class="row">
 
-                    <div class="col-12 col-sm-4 mt-2"> <input class="btn btn-primary" type="submit" name="codesubmit" value="ذخیره انتشار"></div>
+                    <div class="col-12 col-sm-4 mt-2"> <input class="btn btn-primary" type="submit" name="codesubmit" value="Save"></div>
                 </div>
             </form>
         </div>
