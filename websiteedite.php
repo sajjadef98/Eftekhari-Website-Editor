@@ -1,13 +1,3 @@
-<?php
-
-// admin.php
-session_start();
-
-if (!isset($_SESSION['username']) || !isset($_SESSION['password'])) {
-    header("location:log/index.php");
-}
-
-?>
 <!DOCTYPE html>
 <html lang="fa-IR" dir="rtl" >
 <head>
@@ -508,5 +498,5 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['password'])) {
     </svg></a>
 <footer class="footer ">
     <p class="clearfix mb-0 sa-cen">
-        <span class=" d-block d-md-inline-block mt-25">پیاده سازی و اجرا <a class="ml-25" href="https://www.instagram.com/phpdevelop.er/" target="_blank"> Sajjad Eftekhari</a><span class="d-none d-sm-inline-block">&nbsp;&nbsp;&nbsp; <?= date('Y') ?><span style="font-size: 18pt"> © </span> </span></span>
+        <span class=" d-block d-md-inline-block mt-25">پیاده سازی و اجرا <a class="ml-25" href="https://sajjadef.ir/" target="_blank"> Sajjad Eftekhari</a><span class="d-none d-sm-inline-block">&nbsp;&nbsp;&nbsp; <?= date('Y') ?><span style="font-size: 18pt"> © </span> </span></span>
 </footer></body></html>
